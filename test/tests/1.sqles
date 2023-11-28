@@ -1,0 +1,19 @@
+Selecciono
+  campos        recurso.id como 'Recurso ID',
+                recurso.nombre como 'Nombre'
+  de tabla      recurso
+  junto         otro_recurso
+    por         recurso.id_otro = otro_recurso.id
+  donde         recurso.id = 15
+  ordenado por  recurso.id descendentemente, otro_recurso.id ascendentemente
+  en página     1
+  con           20 ítems por página
+  creando       variable.
+Inserto en tabla recurso valores {
+    col_1: 'algun valor',
+    col_2: 'algun otro valor'
+}.
+Actualizo en tabla recurso donde ( recurso.id = 10 ) valores {
+    col_1: 'Nuevo valor'
+}.
+Elimino en tabla recurso donde ( recurso.id = 10 ).

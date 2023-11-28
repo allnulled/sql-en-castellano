@@ -1,0 +1,15 @@
+{
+  "name": "sql-en-castellano",
+  "version": "0.0.1",
+  "description": "Lenguaje de programación con las CRUD básicas de SQL pero en castellano. Para ambos, node.js y navegadores.",
+  "main": "src/sql-en-castellano.parser.js",
+  "scripts": {
+    "start": "npx http-server -c-1 docs -o index.1.html",
+    "dev": "npx nodemon -w src/sql-en-castellano.parser.pegjs -w test/tests/*.sqles -x 'npm run test'",
+    "build-parser": "npx pegjs -o src/sql-en-castellano.parser.js src/sql-en-castellano.parser.pegjs && npx pegjs -o docs/lib/sql-en-castellano/sql-en-castellano.parser.js --format globals --export-var Sql_en_castellano src/sql-en-castellano.parser.pegjs",
+    "test": "npm run build-parser && node test/test.js"
+  },
+  "keywords": ["sql", "castellano", "español", "spanish"],
+  "author": "allnulled",
+  "license": "WTFPL"
+}
