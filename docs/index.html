@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head>
-    <title>🌐 SQLite en castellano 🌐</title>
+    <title>🌐 SQLite UI 🌐</title>
     <meta charset="utf8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="lib/win7/win7.scoped.2.css" />
@@ -8,24 +8,13 @@
     <script src="lib/sql-en-castellano/sql-en-castellano.parser.js"></script>
     <script src="lib/sqlite3/sqlite3.js"></script>
 </head><body><div id="app"></div><script>
-// [castelog:html5izable] ACTIVADO con: {"autor":"allnulled","nombre":"index","version":"1","contenido":{"head":"<head>\n    <title>🌐 SQLite en castellano 🌐</title>\n    <meta charset=\"utf8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"lib/win7/win7.scoped.2.css\" />\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"lib/theme/theme.css\" />\n    &gt;script src=\"lib/calo/calo.js\">&gt;/script>\n    &gt;script src=\"lib/sql-en-castellano/sql-en-castellano.parser.js\">&gt;/script>\n    &gt;script src=\"lib/sqlite3/sqlite3.js\">&gt;/script>\n</head>","body":"<body><div id=\"app\"></div></body>"}}
+// [castelog:html5izable] ACTIVADO con: {"autor":"allnulled","nombre":"index","version":"1","contenido":{"head":"<head>\n    <title>🌐 SQLite UI 🌐</title>\n    <meta charset=\"utf8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"lib/win7/win7.scoped.2.css\" />\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"lib/theme/theme.css\" />\n    &gt;script src=\"lib/calo/calo.js\">&gt;/script>\n    &gt;script src=\"lib/sql-en-castellano/sql-en-castellano.parser.js\">&gt;/script>\n    &gt;script src=\"lib/sqlite3/sqlite3.js\">&gt;/script>\n</head>","body":"<body><div id=\"app\"></div></body>"}}
 
 window.PaginaDeInicio = Castelog.metodos.un_componente_vue2("PaginaDeInicio",
   "<div class=\"PaginaDeInicio Component\">"
- + "    <h5>🌐 SQLite en castellano 🌐</h5>"
+ + "    <h5>🌐 SQLite UI 🌐</h5>"
  + "    <div>"
- + "      <table style=\"width:100%;\">"
- + "        <tr>"
- + "          <td style=\"width:10%;\">"
- + "            <button style=\"width:100%; white-space:nowrap;\" v-on:click=\"cambiar_modo\">"
- + "              {{ esta_en_castellano ? \"Cambiar a SQL\" : \"Cambiar a SQL-ES\" }}"
- + "            </button>"
- + "          </td>"
- + "          <td style=\"width:90%;\">"
- + "            <button style=\"width:100%;\" v-on:click=\"ejecutar_sql\">▶ Ejecutar</button>"
- + "          </td>"
- + "        </tr>"
- + "      </table>"
+ + "      <button style=\"width:100%;\" v-on:click=\"ejecutar_sql\">▶ Execute</button>"
  + "    </div>"
  + "    <div>"
  + "      <textarea class=\"console_style\" v-model=\"script_de_entrada\"></textarea>"
@@ -40,8 +29,7 @@ required:true
 },
 data() {try {
 return { script_de_entrada:"",
-script_de_salida:"",
-esta_en_castellano:false
+script_de_salida:""
 };
 } catch(error) {
 console.log(error);
@@ -49,23 +37,8 @@ throw error;
 }
 
 },
-methods:{ cambiar_modo() {try {
-this.esta_en_castellano = (!(this.esta_en_castellano));
-} catch(error) {
-console.log(error);
-throw error;
-}
-
-},
-async ejecutar_sql() {try {
-if(this.esta_en_castellano) {
-const sql_en_castellano = this.script_de_entrada;
-const sql_bruto = this.root.$window.Sql_en_castellano.parse( sql_en_castellano );
-sql = sql_bruto.join( "\n\n" );
-}
-else {
-sql = this.script_de_entrada;
-}
+methods:{ async ejecutar_sql() {try {
+const sql = this.script_de_entrada;
 const inicio = new Date(  );
 const resultado = (await this.root.$db.run( sql ));
 const finalizamiento = new Date(  );
@@ -120,10 +93,7 @@ window.App = Castelog.metodos.una_aplicacion_vue2(
  + "                      <div style=\"max-height:100px;overflow:scroll;\">"
  + "                        <div><u style=\"font-weight:bold;\">Type:</u> {{ error.name }}</div>"
  + "                        <div><u style=\"font-weight:bold;\">Message:</u> {{ error.message }}</div>"
- + "                        <div v-if=\"error.location\">"
- + "                          <div><u style=\"font-weight:bold;\">Location: </u>{{ error.location }}</div>"
- + "                          <div><u style=\"font-weight:bold;\">Expected: </u>{{ error.expected }}</div>"
- + "                        </div>"
+ + "                        <div><u style=\"font-weight:bold;\">Stack:</u> {{ error.stack }}</div>"
  + "                      </div>"
  + "                    </div>"
  + "                    <hr />"
@@ -218,6 +188,7 @@ rowMode:"object",
 returnValue:"resultRows"
 } );
 if(habilitar_historial && (!(( sql.trim(  ).toUpperCase(  ).startsWith( "SELECT" ) )))) {
+console.log(resultado);
 const comandos = this.obtener_base_de_datos_de_comandos_persistida(  );
 comandos.push(sql)
 this.guardar_base_de_datos_de_comandos_persistida( comandos );

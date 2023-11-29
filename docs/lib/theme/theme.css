@@ -1,0 +1,63 @@
+html {
+    background-color: #333333;
+}
+h5 {
+    margin: 0;
+    padding: 12px;
+    font-size: 12px;
+    font-family: Arial;
+    background-color: #333;
+    color: white;
+}
+.puerto_de_errores {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.5);
+}
+.puerto_de_errores > .caja_1 {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.puerto_de_errores > .caja_2 {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.puerto_de_errores .tabla_de_error {
+    width: 100%;
+    height: 100%;
+    
+}
+.puerto_de_errores hr {
+    margin: 0;
+}
+.puerto_de_errores .tabla_de_error td {
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+    padding: 12px;
+}
+.puerto_de_errores .window {
+    
+}
+.console_style {
+    width: 100%;
+    resize: vertical;
+    min-height: 80px;
+    font-family: monospace !important;
+    font-size: 10px !important;
+    background-color: #223 !important;
+    color: #2F2;
+}
+.console_style.output_style {
+    background-color: #FFF !important;
+    color: #222;
+}

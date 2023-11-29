@@ -3,25 +3,40 @@ Ejecutable como documento HTML5
     con nombre index
     con versión 1
 <head>
-    <title>🌐 SQL en castellano</title>
+    <title>🌐 SQLite en castellano 🌐</title>
     <meta charset="utf8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="lib/win7/win7.scoped.2.css" />
+    <link rel="stylesheet" type="text/css" href="lib/theme/theme.css" />
     <script src="lib/calo/calo.js"></script>
     <script src="lib/sql-en-castellano/sql-en-castellano.parser.js"></script>
     <script src="lib/sqlite3/sqlite3.js"></script>
 </head>
 <body><div id="app"></div></body>.
 
-### importo api nativa.
-
-hago sqlite3InitModule().then(una función con (sqlite3) donde {
-  asigno window.sqlite3 como sqlite3.
-}).
-
 asigno window.PaginaDeInicio como un componente vue2 con nombre "PaginaDeInicio" con plantilla {
   <div class="PaginaDeInicio Component">
-    <h5>🌐 SQL en castellano</h5>
+    <h5>🌐 SQLite en castellano 🌐</h5>
+    <div>
+      <table style="width:100%;">
+        <tr>
+          <td style="width:10%;">
+            <button style="width:100%; white-space:nowrap;" v-on:click="cambiar_modo">
+              {{ esta_en_castellano ? "Cambiar a SQL" : "Cambiar a SQL-ES" }}
+            </button>
+          </td>
+          <td style="width:90%;">
+            <button style="width:100%;" v-on:click="ejecutar_sql">▶ Ejecutar</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <textarea class="console_style" v-model="script_de_entrada"></textarea>
+    </div>
+    <div>
+      <textarea class="console_style output_style" v-model="script_de_salida"></textarea>
+    </div>
   </div>
 } con lógica {
   retorno {
@@ -32,9 +47,31 @@ asigno window.PaginaDeInicio como un componente vue2 con nombre "PaginaDeInicio"
       }.
     }.
     método data donde {
-      retorno {}.
+      retorno {
+        script_de_entrada: "",
+        script_de_salida: "",
+        esta_en_castellano: false
+      }.
     }.
-    propiedad methods como {}.
+    propiedad methods como {
+      método cambiar_modo donde {
+        asigno this.esta_en_castellano como no this.esta_en_castellano.
+      }.
+      método asíncrono ejecutar_sql donde {
+        si this.esta_en_castellano {
+          creo sql_en_castellano como this.script_de_entrada.
+          creo sql_bruto como this.root.$window.Sql_en_castellano.parse(sql_en_castellano).
+          asigno sql como sql_bruto.join("\n\n").
+        } y si no {
+          asigno sql como this.script_de_entrada.
+        }.
+        creo inicio como un nuevo Date().
+        creo resultado como asíncronamente this.root.$db.run(sql).
+        creo finalizamiento como un nuevo Date().
+        creo tardanza como finalizamiento - inicio.
+        asigno this.script_de_salida como resultado textualizado + "\n\nRespuesta procesada en " + (tardanza / 1000) + " segundos.".
+      } en errores hago this.root.gestion_de_error(error).
+    }.
     propiedad watch como {}.
     propiedad computed como {}.
     método beforeCreate donde {}.
@@ -62,6 +99,39 @@ asigno window.App como una aplicación vue2 con nombre "App" con rutas [{
 } con plantilla {
   <div class="App Component Castelog-app win7">
     <router-view :root="this"></router-view>
+    <div class="puerto_de_errores" v-if="errores && errores.length">
+      <div class="caja_1">
+        <table class="tabla_de_error" v-for="error, error_index in errores" v-bind:key="'error-' + error_index">
+          <tr>
+            <td style="text-align:center;">
+              <div style="text-align:left;">
+                <div class="window">
+                  <div class="title-bar">
+                    <div class="title-bar-text">Error</div>
+                  </div>
+                  <div class="window-body">
+                    <div style="padding:4px;">
+                      <div style="max-height:100px;overflow:scroll;">
+                        <div><u style="font-weight:bold;">Type:</u> {{ error.name }}</div>
+                        <div><u style="font-weight:bold;">Message:</u> {{ error.message }}</div>
+                        <div v-if="error.location">
+                          <div><u style="font-weight:bold;">Location: </u>{{ error.location }}</div>
+                          <div><u style="font-weight:bold;">Expected: </u>{{ error.expected }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr />
+                    <div style="padding:4px; text-align:right;">
+                      <button v-on:click="() => eliminar_error(error_index)">Aceptar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
 } con estilos {
     html {}
@@ -71,14 +141,69 @@ asigno window.App como una aplicación vue2 con nombre "App" con rutas [{
 } con lógica {
   retorno {
     método data donde {
-      retorno {}.
+      retorno {
+        errores: []
+      }.
     }.
-    propiedad methods como {}.
+    propiedad methods como {
+      método gestion_de_error con (error) donde {
+        apendizo error en this.errores.
+        hago this.$forceUpdate(true).
+      }.
+      método eliminar_error con (error_index) donde {
+        hago this.errores.splice(error_index, 1).
+      }.
+      método obtener_base_de_datos_de_comandos_persistida donde {
+        si window.localStorage.__sqlite_ui__ no es tipo texto {
+          asigno window.localStorage.__sqlite_ui__ como "[]".
+        }.
+        intento donde hago window.localStorage.__sqlite_ui__ parseado como JSON en errores asigno window.localStorage.__sqlite_ui__ como "[]".
+        retorno window.localStorage.__sqlite_ui__ parseado como JSON.
+      }.
+      método guardar_base_de_datos_de_comandos_persistida con (datos) donde {
+        asigno window.localStorage.__sqlite_ui__ como datos textualizado.
+      }.
+      método asíncrono actualizar_comandos con () donde {
+        creo comandos como this.obtener_base_de_datos_de_comandos_persistida().
+        desde 0 hasta comandos.length {
+          creo comando como comandos[index].
+          intento {
+            hago asíncronamente this.$db.run(comando, false).
+          } en errores {
+            imprimo error.
+          }.
+        }.
+      }.
+      método asíncrono generar_base_de_datos con () donde {
+        creo sqlite3 como asíncronamente window.sqlite3InitModule().
+        creo db como una nueva sqlite3.oo1.DB("/sqlite_ui.sqlite3",'ct').
+        retorno {
+          native: db,
+          run: una lambda con (sql, habilitar_historial o en su defecto true) donde {
+            retorno una nueva Promise(una lambda con (ok, fail) donde {
+              creo resultRows como [].
+              creo resultado como db.exec({
+                sql,
+                rowMode: "object",
+                returnValue: "resultRows"
+              }).
+              si habilitar_historial y no (sql.trim().toUpperCase().startsWith("SELECT")) {
+                creo comandos como this.obtener_base_de_datos_de_comandos_persistida().
+                apendizo sql en comandos.
+                hago this.guardar_base_de_datos_de_comandos_persistida(comandos).
+              }.
+              retorno ok(resultado).
+            } en errores retorno fail(error)).
+          }
+        }.
+      }.
+    }.
     propiedad watch como {}.
     método asíncrono beforeMount donde {
-      hago asíncronamente window.sqlite3InitModule.
       asigno this.$window como window.
-    }.
+      asigno this.$db como asíncronamente this.generar_base_de_datos().
+      hago asíncronamente this.actualizar_comandos().
+    } en errores imprimo error.
     método mounted donde {}.
   }.
 } montada en "#app".

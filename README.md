@@ -1,3 +1,18 @@
+# sqlite-en-castellano
+
+SQLite en castellano. Bueno, SQLite, SQLite no, solo un ridículo subconjunto de él que permite las CRUD más básicas.
+
+## Versión online
+
+Puedes ir directamente a practicar la sintaxis en:
+
+- [https://allnulled.github.io/sqlite-en-castellano](https://allnulled.github.io/sqlite-en-castellano)
+
+## Sintaxis
+
+Este es el test que está ahora.
+
+```
 Selecciono
   campos recurso.id como 'Recurso ID',
     recurso.nombre como 'Nombre'
@@ -26,3 +41,5 @@ Actualizo en tabla recurso donde (recurso.id = 10) y (recurso.id != 9) y (recurs
 }.
 
 Elimino en tabla recurso donde ( recurso.id = 10 ).
+
+```
